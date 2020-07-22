@@ -22,14 +22,19 @@ class Runner {
         .filter((item) => Number.isInteger(+item))
         .join("");
       $("#runner img").attr("src", runnerSrcs[lastNumber & 3]);
+    }, 10 * ONE_FRAME);
+
+    // 跑步位移
+    this.moving = setInterval(() => {
       this.x = +runner.css("left").split("px")[0];
-      this.x += 10;
+      this.x += MILEAGE_PER_FAME;
       runner.css("left", `${this.x}px`);
-    }, ONE_FRAME * 10);
+    }, ONE_FRAME);
   }
 
   stop() {
     clearInterval(this.running);
+    clearInterval(this.moving);
   }
 
   changeRunWays() {}
