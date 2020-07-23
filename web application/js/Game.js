@@ -16,5 +16,13 @@ class Game {
     this.runner.running();
   }
 
-  endGame() {}
+  /**
+   *
+   * @param {type} 游戏结束的类型：1.success：成功到达终点；2.error：碰到障碍物
+   */
+  endGame(type = "success") {
+    const endBox = $("#end");
+    endBox.removeClass("hide");
+    $(`#end .${type}`).removeClass("hide");
+  }
 }

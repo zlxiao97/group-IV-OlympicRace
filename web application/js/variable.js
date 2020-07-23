@@ -15,3 +15,6 @@ const runnerSrcs = [
   "imgs/runner_3.png",
   "imgs/runner_4.png",
 ];
+
+const pyreSrc = "imgs/pyre.svg";
+const firePyreSrc = "imgs/pyre_fire.svg";
