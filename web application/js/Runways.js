@@ -16,7 +16,15 @@ class RunWays {
     }
   }
 
-  calcRunnerPosition() {}
-
-  getRunnerSize() {}
+  calcRunnerXPosition(x) {
+    return x;
+  }
+  calcRunnerYPosition(x) {
+    if (x <= this.slopeXPos) return this.yPos;
+    if (x > this.slopeXPos + SLOPE_WIDTH) return this.yPos + SLOPE_HEIGHT;
+    return this.yPos + (x - this.slopeXPos) * SLOPE_TAN;
+  }
+  getRunnerSize() {
+    return this.runnerSize;
+  }
 }
