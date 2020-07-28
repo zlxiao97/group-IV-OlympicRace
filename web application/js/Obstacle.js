@@ -1,20 +1,19 @@
 class Obstacle {
-  constructor(no, x) {
-    this.runWaysNo = no; // 所在跑道编号
-    this.xPos = x; // X轴方向偏移
-    switch (no) {
-      case 1:
-        this.width = 16; // 图片宽度
-        this.height = 62; // 图片高度
-        break;
-      case 2:
-        this.width = 22; // 图片宽度
-        this.height = 68; // 图片高度
-        break;
-      default:
-        this.width = 28; // 图片宽度
-        this.height = 74; // 图片高度
-    }
+  constructor(x, xBase) {
+    this.xPos = x + xBase; // X轴方向偏移
+    this.dom = $("<span></span>")
+      .addClass("obstacle")
+      .css("margin-left", `${x}px`);
+  }
+
+  getX() {
+    return this.xPos;
+  }
+
+  addTo(runway) {
+    runway.addObstacle(this);
+    $(`#runway${runway.getRunwayNo()}`).append(this.dom);
+    return this;
   }
 
   isRunnerHitted() {}

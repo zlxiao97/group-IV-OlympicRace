@@ -1,6 +1,7 @@
 class RunWays {
   constructor(no) {
-    this.slopeXPos = 4725; // 坡的起始X轴位置，单位px
+    this.no = no;
+    this.obstacles = [];
     switch (no) {
       case 1:
         this.yPos = 115; // Y轴方向偏移，单位px
@@ -16,14 +17,30 @@ class RunWays {
     }
   }
 
+  addObstacle(obstacle) {
+    this.obstacles.push(obstacle);
+  }
+
+  getXBase() {
+    const { obstacles } = this;
+    const { length } = obstacles;
+    return obstacles[length - 1].getX();
+  }
+
+  getRunwayNo() {
+    return this.no;
+  }
+
   calcRunnerXPosition(x) {
     return x;
   }
+
   calcRunnerYPosition(x) {
-    if (x <= this.slopeXPos) return this.yPos;
-    if (x > this.slopeXPos + SLOPE_WIDTH) return this.yPos + SLOPE_HEIGHT;
-    return this.yPos + (x - this.slopeXPos) * SLOPE_TAN;
+    if (x <= SLOPE_X_POS) return this.yPos;
+    if (x > SLOPE_X_POS + SLOPE_WIDTH) return this.yPos + SLOPE_HEIGHT;
+    return this.yPos + (x - SLOPE_X_POS) * SLOPE_TAN;
   }
+
   getRunnerSize() {
     return this.runnerSize;
   }

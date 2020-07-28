@@ -149,10 +149,10 @@ h3 {
   text-transform: uppercase;
 }
 .obstacle {
-  display: block;
+  display: inline-block;
   background: url(../imgs/obstacle.svg) no-repeat center;
   width: 28px;
-  height: 74px;
+  height: 100%;
 }
 #runways {
   position: absolute;
@@ -160,20 +160,26 @@ h3 {
   left: 0px;
   bottom: 60px;
 }
-#runway1 .obstacle {
-  width: 16px;
+#runway1 {
   height: 62px;
   margin-bottom: -50px;
+}
+#runway2 {
+  height: 68px;
+  margin-bottom: -45px;
+}
+#runway3 {
+  height: 74px;
+}
+#runway1 .obstacle {
+  width: 16px;
   margin-left: 350px;
 }
 #runway2 .obstacle {
   width: 22px;
-  height: 68px;
-  margin-bottom: -45px;
   margin-left: 250px;
 }
 #runway3 .obstacle {
   width: 28px;
-  height: 74px;
   margin-left: 150px;
 }
