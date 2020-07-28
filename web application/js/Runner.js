@@ -65,6 +65,7 @@ class Runner {
   running() {
     this._Run();
     this._Move();
+    this._jump();
   }
 
   stand() {
@@ -84,5 +85,46 @@ class Runner {
     this._changeRunnerSize();
   }
 
-  jump() {}
+  _jump() {
+    document.onkeydown = function (event) {
+      var e = event || window.event;
+      //keyCode 32 = sapce
+      if (e && e.keyCode == 32) {
+          var runner = document.getElementById("runner");
+          //空中无法跳跃
+          var runLen = runner.style.left;
+          var len = runLen.substring(0, runLen.length - 5);
+          if (runner.style.marginBottom == "0px" || runner.style.marginBottom == "") {
+              var count = 0;
+              var height = 0;
+              //终点之前跳跃有效
+              if(len < 5120) {
+                  var jump = setInterval(() => {
+                      var runner = document.getElementById("runner");
+                      if (count == 0) {
+                          height += 2;
+                          runner.style.marginBottom = height + "px";
+                          if (runner.style.marginBottom == "80px") {
+                              count = 1;
+                          }
+                      }
+
+                      if (count == 1) {
+                          height -= 2;
+                          runner.style.marginBottom = height + "px";
+                          if (runner.style.marginBottom == "0px") {
+                              count = 2;
+                          }
+                      }
+
+                      if (count == 2) {
+                          clearInterval(jump);
+                      }
+                  }, 10)    
+              }
+              
+          }
+      }
+  }
+  }
 }
