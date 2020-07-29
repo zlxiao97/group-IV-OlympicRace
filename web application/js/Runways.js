@@ -1,4 +1,4 @@
-class RunWays {
+class RunWay {
   constructor(no) {
     this.no = no;
     this.obstacles = [];
@@ -17,11 +17,15 @@ class RunWays {
     }
   }
 
+  getObstacles() {
+    return this.obstacles;
+  }
+
   addObstacle(obstacle) {
     this.obstacles.push(obstacle);
   }
 
-  getXBase() {
+  getObstacleXBase() {
     const { obstacles } = this;
     const { length } = obstacles;
     return obstacles[length - 1].getX();

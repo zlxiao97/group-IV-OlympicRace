@@ -3,16 +3,21 @@ class Runner {
     this.game = game; // 参与的游戏
     this.x = 0; // 已跑步数
     this.y = 3; // 所在的跑道号
-    $(document).on("keydown", (e) => {
-      const key = +(window.event ? e.keyCode : e.which);
-      // ↑方向键
-      if (key === 38) {
-        this.changeRunWays(this.y - 1 > 0 ? this.y - 1 : 1);
-      } // ↓方向键
-      else if (key === 40) {
-        this.changeRunWays(this.y + 1 < 4 ? this.y + 1 : 3);
-      }
-    });
+    this.runner = $("#runner"); // dom
+    (this.height = 0), // 当前跳跃高度
+      $(document).on("keydown", (e) => {
+        const key = +(window.event ? e.keyCode : e.which);
+        // ↑方向键
+        if (key === 38) {
+          this.changeRunWays(this.y - 1 > 0 ? this.y - 1 : 1);
+        } // ↓方向键
+        else if (key === 40) {
+          this.changeRunWays(this.y + 1 < 4 ? this.y + 1 : 3);
+        } // 空格键
+        else if (key === 32) {
+          this._jump();
+        }
+      });
   }
 
   /** 私有方法 */
@@ -21,7 +26,7 @@ class Runner {
   _Run() {
     const img = $("#runner img");
     this.running = setInterval(() => {
-      const lastNumber = img
+      const lastNumber = +img
         .attr("src")
         .split("")
         .filter((item) => Number.isInteger(+item))
@@ -33,16 +38,16 @@ class Runner {
   // 跑步位移
   _Move() {
     const { end: to } = this.game;
-    const runner = $("#runner");
     this.moving = setInterval(() => {
       const runway = this.game[`runway${this.y}`];
       this.x = runway.calcRunnerXPosition(this.x + MILEAGE_PER_FAME);
-      runner.css(
+      this.runner.css(
         "bottom",
         `${runway.calcRunnerYPosition(this.x + MILEAGE_PER_FAME)}px`
       );
-      runner.css("left", `${this.x}px`);
+      this.runner.css("left", `${this.x}px`);
       $(document).scrollLeft(this.x);
+      this._isHitObstacle();
       if (this.x >= to) this.stop("success");
     }, ONE_FRAME);
   }
@@ -60,12 +65,74 @@ class Runner {
     pyre.attr("src", firePyreSrc);
   }
 
+  // 判断是否碰到障碍物
+  _isHitObstacle() {
+    const runway = this.game[`runway${this.y}`];
+    const obstacles = runway.getObstacles();
+    const runnerWidth = runway.getRunnerSize() * RUNNER_IMG_WIDTH;
+    const { width: obstacleWidth, height: obstacleHeight } = OBSTACLES_WIDTH[
+      this.y - 1
+    ];
+    const isInXRange = obstacles
+      .filter((obstacle) => {
+        const left = obstacle.getX() - runnerWidth;
+        const right = obstacle.getX() + obstacleWidth;
+        return this.x >= left && this.x <= right;
+      })
+      .reduce(() => true, false);
+    if (isInXRange) {
+      const jumpHeight = +this.runner.css("margin-bottom").split("px")[0];
+      if (jumpHeight <= obstacleHeight) {
+        this.stop("error");
+      }
+    }
+  }
+
+  // 跳跃
+  _jump() {
+    // 计算跳跃速度
+    const { height: obstacleHeight } = OBSTACLES_WIDTH[this.y - 1];
+    const targetHeight = obstacleHeight + GMAE_HARD_VALUE;
+    const heightPerFrame = targetHeight / JUMP_HIGHEST_TIME / FPS;
+    //空中无法跳跃
+    const runLen = this.runner.css("left");
+    const len = +runLen.split("px")[0];
+    this.height = +this.runner.css("margin-bottom").split("px")[0];
+
+    if (this.height <= 0 || this.height === "") {
+      var count = 0;
+      //终点之前跳跃有效
+      if (len < 5120) {
+        this.jump = setInterval(() => {
+          if (count == 0) {
+            this.height += heightPerFrame;
+            this.runner.css("margin-bottom", `${this.height}px`);
+            if (this.height >= targetHeight) {
+              count = 1;
+            }
+          }
+
+          if (count == 1) {
+            this.height -= heightPerFrame;
+            this.runner.css("margin-bottom", `${this.height}px`);
+            if (this.height <= 0) {
+              count = 2;
+            }
+          }
+
+          if (count == 2) {
+            clearInterval(this.jump);
+          }
+        }, ONE_FRAME);
+      }
+    }
+  }
+
   /** 公共方法 */
 
   running() {
     this._Run();
     this._Move();
-    this._jump();
   }
 
   stand() {
@@ -75,6 +142,7 @@ class Runner {
   stop(type) {
     clearInterval(this.running);
     clearInterval(this.moving);
+    clearInterval(this.jump);
     this.stand();
     this._fire();
     this.game.endGame(type);
@@ -83,48 +151,5 @@ class Runner {
   changeRunWays(no) {
     this.y = no;
     this._changeRunnerSize();
-  }
-
-  _jump() {
-    document.onkeydown = function (event) {
-      var e = event || window.event;
-      //keyCode 32 = sapce
-      if (e && e.keyCode == 32) {
-          var runner = document.getElementById("runner");
-          //空中无法跳跃
-          var runLen = runner.style.left;
-          var len = runLen.substring(0, runLen.length - 5);
-          if (runner.style.marginBottom == "0px" || runner.style.marginBottom == "") {
-              var count = 0;
-              var height = 0;
-              //终点之前跳跃有效
-              if(len < 5120) {
-                  var jump = setInterval(() => {
-                      var runner = document.getElementById("runner");
-                      if (count == 0) {
-                          height += 2;
-                          runner.style.marginBottom = height + "px";
-                          if (runner.style.marginBottom == "80px") {
-                              count = 1;
-                          }
-                      }
-
-                      if (count == 1) {
-                          height -= 2;
-                          runner.style.marginBottom = height + "px";
-                          if (runner.style.marginBottom == "0px") {
-                              count = 2;
-                          }
-                      }
-
-                      if (count == 2) {
-                          clearInterval(jump);
-                      }
-                  }, 10)    
-              }
-              
-          }
-      }
-  }
   }
 }

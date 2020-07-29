@@ -26,7 +26,7 @@ class Game {
       } else {
         const runwayNo = Math.round(Math.random() * 2 + 1);
         const runway = this[`runway${runwayNo}`];
-        const xBase = runway.getXBase();
+        const xBase = runway.getObstacleXBase();
         new Obstacle(x - xBase, xBase).addTo(runway);
       }
     });
@@ -35,9 +35,9 @@ class Game {
   startGame() {
     this._init();
     this.runner = new Runner(this);
-    this.runway1 = new RunWays(1);
-    this.runway2 = new RunWays(2);
-    this.runway3 = new RunWays(3);
+    this.runway1 = new RunWay(1);
+    this.runway2 = new RunWay(2);
+    this.runway3 = new RunWay(3);
     this._generateObstacle();
     this.runner.running();
   }
