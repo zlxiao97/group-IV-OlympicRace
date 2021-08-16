@@ -11,11 +11,12 @@ class Obstacle {
         this.width = 22; // 图片宽度
         this.height = 68; // 图片高度
         break;
-      default:
+      case 3:
         this.width = 28; // 图片宽度
         this.height = 74; // 图片高度
+      default:
+        this.width = 16; // 图片宽度
+        this.height = 62; // 图片高度
     }
   }
-
-  isRunnerHitted() {}
 }
