@@ -5,18 +5,43 @@ class Runner {
     this.frame = 0; // 当前帧
   }
 
-  running() {
+  setRunWay() {
+    gsap.set("#runner", {
+      y: RunWays.data[this.y].yPos,
+      scale: RunWays.data[this.y].runnerScale
+    });
+  }
+
+  runOnRunway() {
+    this.setRunWay();
     const runnerSrcs = [
       "imgs/runner_1.png",
       "imgs/runner_2.png",
       "imgs/runner_3.png",
       "imgs/runner_4.png"
     ];
-    // 跑步动画
-    this.timer = setInterval(() => {
-      gsap.set("#runner img", { attr: { src: runnerSrcs[this.frame % 3] } });
-      this.frame++;
-    }, ONE_FRAME * 5);
+    // 跑步动画 --- 人物动作
+    if (!this.timer)
+      this.timer = setInterval(() => {
+        gsap.set("#runner img", { attr: { src: runnerSrcs[this.frame % 3] } });
+        this.frame++;
+      }, ONE_FRAME * 5);
+
+    // 跑步动画 --- 移动人物
+    gsap.to("#runner", {
+      x: 4675,
+      duration: TOTAL_TIME,
+      ease: "power1.in", // 越跑越快
+      onComplete: this.stop.bind(this)
+    });
+
+    // 跑步动画 --- 移动视角
+    gsap.to(window, {
+      delay: 1,
+      scrollTo: { x: 4675, y: 0 },
+      duration: TOTAL_TIME,
+      ease: "power1.in"
+    });
   }
 
   stop() {

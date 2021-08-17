@@ -8,8 +8,9 @@ class Game {
 
   startGame() {
     start.remove();
+    $(document).scrollLeft(0);
     this.runner = new Runner();
-    this.runner.running();
+    this.runner.runOnRunway();
   }
 
   endGame() {}
