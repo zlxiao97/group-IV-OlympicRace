@@ -29,10 +29,17 @@ class Runner {
 
     // 跑步动画 --- 移动人物
     gsap.to("#runner", {
-      x: 4675,
+      motionPath: {
+        path: "#running-path",
+        align: "#running-path",
+        alignOrigin: [0.5, 1],
+        autoRotate: false
+      },
       duration: TOTAL_TIME,
       ease: "power1.in", // 越跑越快
-      onComplete: this.stop.bind(this)
+      onComplete: () => {
+        this.stop();
+      }
     });
 
     // 跑步动画 --- 移动视角
