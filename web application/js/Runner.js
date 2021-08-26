@@ -1,5 +1,6 @@
 class Runner {
-  constructor() {
+  constructor(gameInstance) {
+    this.game = gameInstance;
     this.x = 0; // 已跑步数
     this.y = 3; // 所在的跑道号
     this.frame = 0; // 当前帧
@@ -39,6 +40,15 @@ class Runner {
       ease: "power1.in", // 越跑越快
       onComplete: () => {
         this.stop();
+      },
+      onUpdate: () => {
+        const x = gsap.getProperty("#runner", "x");
+        this.game.panels.forEach((panel) => {
+          const runEvent = new CustomEvent("run", {
+            detail: { x }
+          });
+          panel.dispatchEvent(runEvent);
+        });
       }
     });
 
@@ -53,6 +63,7 @@ class Runner {
 
   stop() {
     if (this.timer) clearInterval(this.timer);
+    $("#pyre img").attr("src", "imgs/pyre_fire.svg");
   }
 
   changeRunWays() {}
